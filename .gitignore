@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual env
+venv/
+.env/
+
+# ML models
+*.pkl
+
+# Streamlit
+.streamlit/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Power BI
+*.pbix

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Healthcare Readmission Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 40px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, select, button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Readmission Risk Predictor</h2>
+
+    <input type="number" id="age" placeholder="Age">
+
+    <select id="gender">
+        <option value="0">Male</option>
+        <option value="1">Female</option>
+    </select>
+
+    <select id="severity">
+        <option value="0">Low Severity</option>
+        <option value="1">Medium Severity</option>
+        <option value="2">High Severity</option>
+    </select>
+
+    <input type="number" id="stay" placeholder="Length of Stay (days)">
+
+    <select id="heart">
+        <option value="0">No Heart Disease</option>
+        <option value="1">Heart Disease</option>
+    </select>
+
+    <button onclick="predict()">Predict</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+function predict() {
+    const data = {
+        age: Number(document.getElementById("age").value),
+        gender: Number(document.getElementById("gender").value),
+        severity_level: Number(document.getElementById("severity").value),
+        length_of_stay: Number(document.getElementById("stay").value),
+        heart_disease: Number(document.getElementById("heart").value)
+    };
+
+    fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        document.getElementById("result").innerHTML =
+            "Prediction: " + (result.prediction === 1 ? "Readmitted" : "Not Readmitted") +
+            "<br>Probability: " + result.readmission_probability +
+            "<br>Risk Level: " + result.risk_level;
+    })
+    .catch(error => {
+        document.getElementById("result").innerHTML = "Error connecting to API";
+    });
+}
+</script>
+
+</body>
+</html>
